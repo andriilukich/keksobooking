@@ -184,15 +184,15 @@ var offers =
 ];
 
 // render Pins
-var renderPin = function(hotels) {
+var renderPin = function(data) {
   var pinElement = PIN_TEMPLATE.cloneNode(true);
   var containerElemet = pinElement.querySelector('.map__pin');
   var avatarImage = pinElement.querySelector('img');
 
-  containerElemet.style.left = hotels.location.x - 21 + 'px';
-  containerElemet.style.top = hotels.location.y - 64 + 'px';
-  avatarImage.src = hotels.author.avatar;
-  avatarImage.alt = hotels.offer.title;
+  containerElemet.style.left = data.location.x - 21 + 'px';
+  containerElemet.style.top = data.location.y - 64 + 'px';
+  avatarImage.src = data.author.avatar;
+  avatarImage.alt = data.offer.title;
 
   return pinElement;
 };
@@ -206,6 +206,54 @@ MAP.querySelector('.map__pins').appendChild(pinFragment);
 
 // render card
 
-var renderCard = function(hotels) {
+var renderCard = function(data) {
   var cardElement = CARD_TEMPLATE.cloneNode(true);
+  var featureList = cardElement.querySelector('.popup__features');
+  var photosContainer = cardElement.querySelector('.popup__photos');
+  var photo = cardElement.querySelector('.popup__photo');
+
+  var type;
+  switch(data.offer.type) {
+    case 'flat':
+      type = 'Квартира';
+      break;
+    case 'bungalo':
+      type = 'Бунгало';
+      break;
+    case 'house':
+      type = 'Дом';
+      break;
+    case 'palace':
+      type = 'Дворец';
+      break;
+  }
+
+  cardElement.querySelector('.popup__title').textContent = data.offer.title;
+  cardElement.querySelector('.popup__text--address').textContent = data.offer.address;
+  cardElement.querySelector('.popup__text--price').textContent = data.offer.price + ' ₽/ночь';
+  cardElement.querySelector('.popup__type').textContent = type;
+  cardElement.querySelector('.popup__text--capacity').textContent = data.offer.rooms + ' комнаты для ' + data.offer.guests + ' гостей';
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + data.offer.checkin +  ', выезд до ' + data.offer.checkout;
+
+  featureList.innerHTML = '';
+  for (var i = 0; i < data.offer.features.length; i++) {
+    var featureItem = document.createElement('li');
+    featureItem.classList.add('popup__feature');
+    featureItem.classList.add('popup__feature--' + data.offer.features[i]);
+    featureList.appendChild(featureItem);
+  }
+  cardElement.querySelector('.popup__description').textContent = data.offer.description;
+
+  photosContainer.innerHTML = '';
+  for (var p = 0; p < data.offer.photos.length; p++) {
+    var newPhoto = photo.cloneNode();
+    newPhoto.src = data.offer.photos[p];
+    photosContainer.appendChild(newPhoto);
+  }
+
+  cardElement.querySelector('.popup__avatar').src = data.author.avatar;
+
+  return cardElement;
 };
+
+MAP.insertBefore(renderCard(offers[0]), MAP.querySelector('.map__filters-container'));
