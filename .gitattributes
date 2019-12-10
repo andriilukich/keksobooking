@@ -2,5 +2,3 @@
 *.jpg -text
 *.png -text
 *.gif -text
-*.woff -text diff
-*.woff2 -text diff
