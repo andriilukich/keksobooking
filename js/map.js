@@ -1,7 +1,9 @@
+'use strict';
+
 var MAP = document.querySelector('.map');
 MAP.classList.remove('map--faded');
 var CARD_TEMPLATE = document.querySelector('#card').content;
-var PIN_TEMPLATE  = document.querySelector('#pin').content;
+var PIN_TEMPLATE = document.querySelector('#pin').content;
 
 var offers =
 [
@@ -22,15 +24,15 @@ var offers =
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
     },
-    'location':{
-      x : 900,
+    'location': {
+      x: 900,
       y: 631
     }
- },
- {
+  },
+  {
     'author': {
       'avatar': 'img/avatars/user02.png'
-      },
+    },
     'offer': {
       'title': 'Маленькая неуютная квартира',
       'address': '650, 250',
@@ -43,16 +45,16 @@ var offers =
       'features': ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg']
-        },
-    'location':{
-      x : 700,
+    },
+    'location': {
+      x: 700,
       y: 452
     }
   },
   {
     'author': {
       'avatar': 'img/avatars/user03.png'
-      },
+    },
     'offer': {
       'title': 'Огромный прекрасный дворец',
       'address': '350, 150',
@@ -65,16 +67,16 @@ var offers =
       'features': ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg'],
-      },
-    'location':{
-      x : 550,
+    },
+    'location': {
+      x: 550,
       y: 452
     }
   },
   {
     'author': {
       'avatar': 'img/avatars/user04.png'
-      },
+    },
     'offer': {
       'title': 'Маленький ужасный дворец',
       'address': '150, 100',
@@ -87,16 +89,16 @@ var offers =
       'features': ['wifi', 'dishwasher', 'elevator', 'conditioner'],
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg'],
-      },
-    'location':{
-      x : 225,
+    },
+    'location': {
+      x: 225,
       y: 452
     }
   },
   {
     'author': {
       'avatar': 'img/avatars/user05.png'
-      },
+    },
     'offer': {
       'title': 'Красивый гостевой домик',
       'address': '120, 180',
@@ -109,16 +111,16 @@ var offers =
       'features': ['wifi', 'dishwasher', 'elevator', 'conditioner'],
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg']
-      },
-      'location':{
-        x : 725,
-        y: 600
-      }
+    },
+    'location': {
+      x: 725,
+      y: 600
+    }
   },
   {
     'author': {
       'avatar': 'img/avatars/user06.png'
-      },
+    },
     'offer': {
       'title': 'Некрасивый негостеприимный домик',
       'address': '170, 138',
@@ -131,16 +133,16 @@ var offers =
       'features': ['wifi', 'dishwasher', 'conditioner'],
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg']
-      },
-      'location':{
-        x : 275,
-        y: 550
-      }
+    },
+    'location': {
+      x: 275,
+      y: 550
+    }
   },
   {
     'author': {
       'avatar': 'img/avatars/user07.png'
-      },
+    },
     'offer': {
       'title': 'Уютное бунгало далеко от моря',
       'address': '90, 180',
@@ -153,16 +155,16 @@ var offers =
       'features': ['wifi', 'conditioner'],
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg']
-      },
-      'location':{
-        x : 195,
-        y: 385
-      }
+    },
+    'location': {
+      x: 195,
+      y: 385
+    }
   },
   {
     'author': {
       'avatar': 'img/avatars/user08.png'
-      },
+    },
     'offer': {
       'title': 'Неуютное бунгало по колено в воде',
       'address': '90, 180',
@@ -175,16 +177,16 @@ var offers =
       'features': ['wifi', 'conditioner'],
       'description': '',
       'photos': ['http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'http://o0.github.io/assets/images/tokyo/hotel1.jpg']
-      },
-      'location':{
-        x : 395,
-        y: 401
-      }
+    },
+    'location': {
+      x: 395,
+      y: 401
+    }
   },
 ];
 
 // render Pins
-var renderPin = function(data) {
+var renderPin = function (data) {
   var pinElement = PIN_TEMPLATE.cloneNode(true);
   var containerElemet = pinElement.querySelector('.map__pin');
   var avatarImage = pinElement.querySelector('img');
@@ -206,14 +208,14 @@ MAP.querySelector('.map__pins').appendChild(pinFragment);
 
 // render card
 
-var renderCard = function(data) {
+var renderCard = function (data) {
   var cardElement = CARD_TEMPLATE.cloneNode(true);
   var featureList = cardElement.querySelector('.popup__features');
   var photosContainer = cardElement.querySelector('.popup__photos');
   var photo = cardElement.querySelector('.popup__photo');
 
   var type;
-  switch(data.offer.type) {
+  switch (data.offer.type) {
     case 'flat':
       type = 'Квартира';
       break;
@@ -233,13 +235,13 @@ var renderCard = function(data) {
   cardElement.querySelector('.popup__text--price').textContent = data.offer.price + ' ₽/ночь';
   cardElement.querySelector('.popup__type').textContent = type;
   cardElement.querySelector('.popup__text--capacity').textContent = data.offer.rooms + ' комнаты для ' + data.offer.guests + ' гостей';
-  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + data.offer.checkin +  ', выезд до ' + data.offer.checkout;
+  cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + data.offer.checkin + ', выезд до ' + data.offer.checkout;
 
   featureList.innerHTML = '';
-  for (var i = 0; i < data.offer.features.length; i++) {
+  for (var index = 0; index < data.offer.features.length; index++) {
     var featureItem = document.createElement('li');
     featureItem.classList.add('popup__feature');
-    featureItem.classList.add('popup__feature--' + data.offer.features[i]);
+    featureItem.classList.add('popup__feature--' + data.offer.features[index]);
     featureList.appendChild(featureItem);
   }
   cardElement.querySelector('.popup__description').textContent = data.offer.description;
