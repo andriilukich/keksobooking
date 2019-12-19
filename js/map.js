@@ -1,9 +1,8 @@
 'use strict';
 
-var MAP = document.querySelector('.map');
-MAP.classList.remove('map--faded');
-var CARD_TEMPLATE = document.querySelector('#card').content;
-var PIN_TEMPLATE = document.querySelector('#pin').content;
+var map = document.querySelector('.map');
+var cardTemplate = document.querySelector('#card').content;
+var pinTemplate = document.querySelector('#pin').content;
 var MAX_OFFERS = 8;
 var TITLE_LIST = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var TYPE_LIST = ['palace', 'flat', 'house', 'bungalo'];
@@ -74,7 +73,7 @@ var createOffer = function () {
       'photos': createLinksList(PHOTOS_LIST)
     },
     'location': {
-      x: getRandomNumber(0, MAP.offsetWidth) + LOCATION_X,
+      x: getRandomNumber(0, map.offsetWidth) + LOCATION_X,
       y: getRandomNumber(LOCATION_Y.MIN, LOCATION_Y.MAX)
     }
   };
@@ -91,7 +90,7 @@ for (var i = 0; i < MAX_OFFERS; i++) {
 
 // Generate Pin
 var renderPin = function (data) {
-  var pinElement = PIN_TEMPLATE.cloneNode(true);
+  var pinElement = pinTemplate.cloneNode(true);
   var containerElemet = pinElement.querySelector('.map__pin');
   var avatarImage = pinElement.querySelector('img');
 
@@ -108,11 +107,11 @@ for (var ind = 0; i < offers.length; ind++) {
   pinFragment.appendChild(renderPin(offers[ind]));
 }
 
-MAP.querySelector('.map__pins').appendChild(pinFragment);
+// map.querySelector('.map__pins').appendChild(pinFragment);
 
 // Generate Card
 var renderCard = function (data) {
-  var cardElement = CARD_TEMPLATE.cloneNode(true);
+  var cardElement = cardTemplate.cloneNode(true);
   var featureList = cardElement.querySelector('.popup__features');
   var photosContainer = cardElement.querySelector('.popup__photos');
   var photo = cardElement.querySelector('.popup__photo');
@@ -161,4 +160,29 @@ var renderCard = function (data) {
   return cardElement;
 };
 
-MAP.insertBefore(renderCard(offers[0]), MAP.querySelector('.map__filters-container'));
+// map.insertBefore(renderCard(offers[0]), map.querySelector('.map__filters-container'));
+
+// Not active state of form's elements
+var adForm = document.querySelector('.ad-form');
+var fieldsets = adForm.querySelectorAll('fieldset');
+
+
+for (var i = 0; i < fieldsets.length; i++) {
+  fieldsets[i].setAttribute('disabled', '');
+}
+
+// Activate the page with an Event of dragging the main Pin
+var mainPin = map.querySelector('.map__pin--main');
+
+var activatePage = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].removeAttribute('disabled', '');
+  }
+};
+
+mainPin.addEventListener('mouseup', function () {
+  activatePage();
+});
