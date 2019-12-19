@@ -9,7 +9,7 @@ var TYPE_LIST = ['palace', 'flat', 'house', 'bungalo'];
 var LOCATION_X = 21;
 var LOCATION_Y = {
   MIN: 130 + 64,
-  MAX: 630
+  MAX: 600 + 30
 };
 var PRICE_RANGE = {
   MIN: 1000,
@@ -183,6 +183,22 @@ var activatePage = function () {
   }
 };
 
-mainPin.addEventListener('mouseup', function () {
+// The initial address of the pin, user address when moving the pin
+var addressInput = adForm.querySelector('#address');
+var PIN_SIZE = {
+  PIN_CENTER: 37,
+  ARROW_HEIGHT: 87
+};
+
+addressInput.setAttribute('placeholder', (mainPin.offsetLeft + PIN_SIZE.PIN_CENTER) + ', ' + (mainPin.offsetTop + PIN_SIZE.PIN_CENTER));
+
+var setAddressInput = function (left, top) {
+  addressInput.setAttribute('placeholder', left + ', ' + top);
+};
+
+mainPin.addEventListener('mouseup', function (evt) {
+  var pinWidthCenter = evt.pageX + PIN_SIZE.PIN_CENTER;
+  var pinHeightArrow = evt.pageY + PIN_SIZE.ARROW_HEIGHT;
   activatePage();
+  setAddressInput(pinWidthCenter, pinHeightArrow);
 });
