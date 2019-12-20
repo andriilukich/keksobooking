@@ -84,18 +84,18 @@ var offers = [];
 for (var i = 0; i < MAX_OFFERS; i++) {
   var offerClone = createOffer(i);
   offerClone.address = offerClone.location.x + ', ' + offerClone.location.y;
-  offerClone.gursts = getRandomNumber(2, offerClone.offer.rooms * 2);
+  offerClone.guests = getRandomNumber(2, offerClone.offer.rooms * 2);
   offers.push(offerClone);
 }
 
 // Generate Pin
 var renderPin = function (data) {
   var pinElement = pinTemplate.cloneNode(true);
-  var containerElemet = pinElement.querySelector('.map__pin');
+  var containerElem = pinElement.querySelector('.map__pin');
   var avatarImage = pinElement.querySelector('img');
 
-  containerElemet.style.left = data.location.x + 'px';
-  containerElemet.style.top = data.location.y + 'px';
+  containerElem.style.left = data.location.x + 'px';
+  containerElem.style.top = data.location.y + 'px';
   avatarImage.src = data.author.avatar;
   avatarImage.alt = data.offer.title;
 
@@ -103,11 +103,9 @@ var renderPin = function (data) {
 };
 
 var pinFragment = document.createDocumentFragment();
-for (var ind = 0; i < offers.length; ind++) {
-  pinFragment.appendChild(renderPin(offers[ind]));
+for (var i = 0; i < offers.length; i++) {
+  pinFragment.appendChild(renderPin(offers[i]));
 }
-
-// map.querySelector('.map__pins').appendChild(pinFragment);
 
 // Generate Card
 var renderCard = function (data) {
@@ -140,18 +138,18 @@ var renderCard = function (data) {
   cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + data.offer.checkin + ', выезд до ' + data.offer.checkout;
 
   featureList.innerHTML = '';
-  for (var index = 0; index < data.offer.features.length; index++) {
+  for (var i = 0; i < data.offer.features.length; i++) {
     var featureItem = document.createElement('li');
     featureItem.classList.add('popup__feature');
-    featureItem.classList.add('popup__feature--' + data.offer.features[index]);
+    featureItem.classList.add('popup__feature--' + data.offer.features[i]);
     featureList.appendChild(featureItem);
   }
   cardElement.querySelector('.popup__description').textContent = data.offer.description;
 
   photosContainer.innerHTML = '';
-  for (var p = 0; p < data.offer.photos.length; p++) {
+  for (var i = 0; i < data.offer.photos.length; i++) {
     var newPhoto = photo.cloneNode();
-    newPhoto.src = data.offer.photos[p];
+    newPhoto.src = data.offer.photos[i];
     photosContainer.appendChild(newPhoto);
   }
 
@@ -196,9 +194,26 @@ var setAddressInput = function (left, top) {
   addressInput.setAttribute('placeholder', left + ', ' + top);
 };
 
+// Render pins of offers and get info about clicked pin
+
 mainPin.addEventListener('mouseup', function (evt) {
   var pinWidthCenter = evt.pageX + PIN_SIZE.PIN_CENTER;
   var pinHeightArrow = evt.pageY + PIN_SIZE.ARROW_HEIGHT;
   activatePage();
   setAddressInput(pinWidthCenter, pinHeightArrow);
+  map.querySelector('.map__pins').appendChild(pinFragment);
+});
+
+var checkTitle = function (title) {
+  for (var i = 0; i < offers.length; i++) {
+    if (title === offers[i].offer.title) {
+      map.insertBefore(renderCard(offers[i]), map.querySelector('.map__filters-container'));
+    }
+  }
+};
+
+document.addEventListener('click', function (evt) {
+  var pinTitle = evt.srcElement.alt;
+  // console.log(evt.target.getBoundingClientRect());
+  checkTitle(pinTitle);
 });
