@@ -6,10 +6,9 @@ var pinTemplate = document.querySelector('#pin').content;
 var MAX_OFFERS = 8;
 var TITLE_LIST = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 var TYPE_LIST = ['palace', 'flat', 'house', 'bungalo'];
-var LOCATION_X = 21;
 var LOCATION_Y = {
-  MIN: 130 + 64,
-  MAX: 600 + 30
+  MIN: 130,
+  MAX: 630
 };
 var PRICE_RANGE = {
   MIN: 1000,
@@ -19,6 +18,16 @@ var MAX_ROOMS = 5;
 var CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
 var FEATURES_LIST = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS_LIST = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var pinSizes = {
+  usersPin: {
+    PIN_CENTER: 25,
+    PIN_HEIGHT: 70
+  },
+  mainPin: {
+    PIN_CENTER: 31,
+    PIN_HEIGHT: 84
+  }
+};
 
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -73,7 +82,7 @@ var createOffer = function () {
       'photos': createLinksList(PHOTOS_LIST)
     },
     'location': {
-      x: getRandomNumber(0, map.offsetWidth) + LOCATION_X,
+      x: getRandomNumber(0, map.offsetWidth),
       y: getRandomNumber(LOCATION_Y.MIN, LOCATION_Y.MAX)
     }
   };
@@ -83,8 +92,9 @@ var createOffer = function () {
 var offers = [];
 for (var i = 0; i < MAX_OFFERS; i++) {
   var offerClone = createOffer(i);
-  offerClone.address = offerClone.location.x + ', ' + offerClone.location.y;
-  offerClone.guests = getRandomNumber(2, offerClone.offer.rooms * 2);
+  // debugger;
+  offerClone.offer.address = offerClone.location.x + ', ' + offerClone.location.y;
+  offerClone.offer.guests = getRandomNumber(2, offerClone.offer.rooms * 2);
   offers.push(offerClone);
 }
 
@@ -94,8 +104,8 @@ var renderPin = function (data) {
   var containerElem = pinElement.querySelector('.map__pin');
   var avatarImage = pinElement.querySelector('img');
 
-  containerElem.style.left = data.location.x + 'px';
-  containerElem.style.top = data.location.y + 'px';
+  containerElem.style.left = (data.location.x - pinSizes.usersPin.PIN_CENTER) + 'px';
+  containerElem.style.top = (data.location.y - pinSizes.usersPin.PIN_HEIGHT) + 'px';
   avatarImage.src = data.author.avatar;
   avatarImage.alt = data.offer.title;
 
@@ -183,37 +193,61 @@ var activatePage = function () {
 
 // The initial address of the pin, user address when moving the pin
 var addressInput = adForm.querySelector('#address');
-var PIN_SIZE = {
-  PIN_CENTER: 37,
-  ARROW_HEIGHT: 87
-};
 
-addressInput.setAttribute('placeholder', (mainPin.offsetLeft + PIN_SIZE.PIN_CENTER) + ', ' + (mainPin.offsetTop + PIN_SIZE.PIN_CENTER));
+addressInput.setAttribute('placeholder', (mainPin.offsetLeft + pinSizes.mainPin.PIN_CENTER) + ', ' + (mainPin.offsetTop + pinSizes.mainPin.PIN_HEIGHT));
 
 var setAddressInput = function (left, top) {
   addressInput.setAttribute('placeholder', left + ', ' + top);
 };
 
 // Render pins of offers and get info about clicked pin
-
+// and close the info after closing btn
 mainPin.addEventListener('mouseup', function (evt) {
-  var pinWidthCenter = evt.pageX + PIN_SIZE.PIN_CENTER;
-  var pinHeightArrow = evt.pageY + PIN_SIZE.ARROW_HEIGHT;
+  var pinWidthCenter = evt.pageX + pinSizes.mainPin.PIN_CENTER;
+  var pinHeightArrow = evt.pageY + pinSizes.mainPin.PIN_HEIGHT;
   activatePage();
   setAddressInput(pinWidthCenter, pinHeightArrow);
   map.querySelector('.map__pins').appendChild(pinFragment);
 });
 
-var checkTitle = function (title) {
+var clearInfo = function () {
+  var cardInfo = map.querySelector('.map__card');
+  if (cardInfo) {
+    map.removeChild(cardInfo);
+  }
+};
+
+var checkAddress = function (evt) {
+  var target = evt.target;
+  var targetLeft = pinSizes.usersPin.PIN_CENTER;
+  var targetTop = pinSizes.usersPin.PIN_HEIGHT;
+
+  if (target.type === 'button') {
+    targetLeft += target.offsetLeft;
+    targetTop += target.offsetTop;
+  } else if (target.tagName === 'IMG') {
+    targetLeft += target.offsetParent.offsetLeft;
+    targetTop += target.offsetParent.offsetTop;
+  }
+
   for (var i = 0; i < offers.length; i++) {
-    if (title === offers[i].offer.title) {
+    var pinLeft = offers[i].location.x;
+    var pinTop = offers[i].location.y;
+    if (pinLeft === targetLeft && pinTop === targetTop) {
       map.insertBefore(renderCard(offers[i]), map.querySelector('.map__filters-container'));
     }
   }
 };
 
 document.addEventListener('click', function (evt) {
-  var pinTitle = evt.srcElement.alt;
-  // console.log(evt.target.getBoundingClientRect());
-  checkTitle(pinTitle);
+  clearInfo();
+  checkAddress(evt);
+});
+
+//Validator of Guests and Rooms
+var roomNumber = adForm.querySelector('#room_number');
+var capacity = adForm.querySelector('#capacity');
+
+roomNumber.addEventListener('invalid', function () {
+
 });
