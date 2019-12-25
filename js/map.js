@@ -244,10 +244,42 @@ document.addEventListener('click', function (evt) {
   checkAddress(evt);
 });
 
-//Validator of Guests and Rooms
-var roomNumber = adForm.querySelector('#room_number');
-var capacity = adForm.querySelector('#capacity');
+// Validator of Guests and Rooms
+var roomsInput = adForm.querySelector('#room_number');
+var guestsInput = adForm.querySelector('#capacity');
 
-roomNumber.addEventListener('invalid', function () {
+var isInvalidRoomsInput = function (rooms, guests) {
+  var message = '';
+  if (rooms === '100' && guests !== '0') {
+    message = 'Этот дворец не для гостей.';
+  } else if (rooms !== '100' && guests === '0') {
+    message = 'Не для гостей только дворец.';
+  }
+  return message;
+};
 
+var isInvalidGuestsInput = function (rooms, guests) {
+  var message = '';
+  if (rooms === '100' && guests !== '0') {
+    message = 'Этот дворец не для гостей.';
+  } else if (rooms !== '100' && guests === '0') {
+    message = 'Укажите количество гостей.';
+  } else if (rooms < guests) {
+    message = 'Количество гостей не должно превышать количество комнат.';
+  }
+  return message;
+};
+
+guestsInput.addEventListener('input', function (evt) {
+  var message = isInvalidGuestsInput(roomsInput.value, guestsInput.value);
+
+  evt.target.setCustomValidity(message);
+  guestsInput.reportValidity();
+});
+
+roomsInput.addEventListener('input', function (evt) {
+  var message = isInvalidRoomsInput(roomsInput.value, guestsInput.value);
+
+  evt.target.setCustomValidity(message);
+  roomsInput.reportValidity();
 });
