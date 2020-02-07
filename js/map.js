@@ -10,6 +10,11 @@ var LOCATION_Y = {
   MIN: 130,
   MAX: 630
 };
+var LOCATION_X = {
+  MIN: 0,
+  MAX: map.offsetWidth
+};
+
 var PRICE_RANGE = {
   MIN: 1000,
   MAX: 1000000
@@ -172,43 +177,98 @@ var renderCard = function (data) {
 
 // Not active state of form's elements
 var adForm = document.querySelector('.ad-form');
-var fieldsets = adForm.querySelectorAll('fieldset');
-
-
-for (var i = 0; i < fieldsets.length; i++) {
-  fieldsets[i].setAttribute('disabled', '');
-}
-
-// Activate the page with an Event of dragging the main Pin
+var setOfFields = adForm.querySelectorAll('fieldset');
+var addressInput = adForm.querySelector('#address');
 var mainPin = map.querySelector('.map__pin--main');
 
-var activatePage = function () {
-  map.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
+for (var i = 0; i < setOfFields.length; i++) {
+  setOfFields[i].setAttribute('disabled', '');
+}
 
-  for (var i = 0; i < fieldsets.length; i++) {
-    fieldsets[i].removeAttribute('disabled', '');
-  }
-};
+addressInput.setAttribute('placeholder',
+    (mainPin.offsetLeft + pinSizes.mainPin.PIN_CENTER) +
+    ', ' + (mainPin.offsetTop + pinSizes.mainPin.PIN_HEIGHT));
 
+// Activate the page with an Event of dragging the main Pin
 // The initial address of the pin, user address when moving the pin
-var addressInput = adForm.querySelector('#address');
-
-addressInput.setAttribute('placeholder', (mainPin.offsetLeft + pinSizes.mainPin.PIN_CENTER) + ', ' + (mainPin.offsetTop + pinSizes.mainPin.PIN_HEIGHT));
-
-var setAddressInput = function (left, top) {
-  addressInput.setAttribute('placeholder', left + ', ' + top);
-};
-
 // Render pins of offers and get info about clicked pin
 // and close the info after closing btn
-mainPin.addEventListener('mouseup', function (evt) {
-  var pinWidthCenter = evt.pageX + pinSizes.mainPin.PIN_CENTER;
-  var pinHeightArrow = evt.pageY + pinSizes.mainPin.PIN_HEIGHT;
-  activatePage();
-  setAddressInput(pinWidthCenter, pinHeightArrow);
-  map.querySelector('.map__pins').appendChild(pinFragment);
+
+mainPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var setInputValue = function (pinEvt) {
+    var pinWidthCenter = pinEvt.pageX + pinSizes.mainPin.PIN_CENTER;
+    var pinHeightArrow = pinEvt.pageY + pinSizes.mainPin.PIN_HEIGHT;
+    addressInput.setAttribute('placeholder', pinWidthCenter + ', ' + pinHeightArrow);
+
+  };
+
+  var activationPage = function (pinEvt) {
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+
+    for (var i = 0; i < setOfFields.length; i++) {
+      setOfFields[i].removeAttribute('disabled', '');
+    }
+
+    map.querySelector('.map__pins').appendChild(pinFragment);
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shiftCoords = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    var topShift = mainPin.offsetTop - shiftCoords.y ;
+    var leftShift = mainPin.offsetLeft - shiftCoords.x;
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    if (topShift + pinSizes.mainPin.PIN_HEIGHT > LOCATION_Y.MIN &&
+      topShift < LOCATION_Y.MAX) {
+      mainPin.style.top = topShift + 'px';
+    }
+    if (leftShift > LOCATION_X.MIN && leftShift + (pinSizes.mainPin.PIN_CENTER * 2) < LOCATION_X.MAX) {
+      mainPin.style.left = leftShift + 'px';
+    }
+
+    setInputValue(moveEvt);
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    setInputValue(upEvt);
+  };
+
+  activationPage(evt);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 });
+// mainPin.addEventListener('mouseup', function (evt) {
+//   evt.preventDefault();
+//   var pinWidthCenter = evt.pageX + pinSizes.mainPin.PIN_CENTER;
+//   var pinHeightArrow = evt.pageY + pinSizes.mainPin.PIN_HEIGHT;
+
+//   activatePage(evt);
+//   addressInput.setAttribute('placeholder', pinWidthCenter + ', ' + pinHeightArrow);
+//   map.querySelector('.map__pins').appendChild(pinFragment);
+// });
 
 var clearInfo = function () {
   var cardInfo = map.querySelector('.map__card');
