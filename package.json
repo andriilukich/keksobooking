@@ -1,25 +1,58 @@
 {
-  "name": "keksobooking",
-  "version": "15.0.0",
-  "private": true,
-  "description": "Личный проект «Кексобукинг» от HTML Academy",
+  "name": "code-and-magick",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "editorconfig": "editorconfig-cli",
+    "stylelint": "stylelint \"source/sass/**/*.scss\" --syntax scss",
+    "test": "npm run editorconfig && npm run stylelint",
+    "build": "gulp build",
+    "start": "gulp start"
+  },
   "repository": {
     "type": "git",
-    "url": "git@github.com:htmlacademy-javascript/794329-keksobooking-18.git"
+    "url": "git+https://github.com/riiand/code-and-magick.git"
   },
+  "author": "andrii",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/htmlacademy-javascript/794329-keksobooking-18/issues"
+    "url": "https://github.com/riiand/code-and-magick/issues"
   },
+  "homepage": "https://github.com/riiand/code-and-magick#readme",
   "devDependencies": {
-    "eslint": "6.3.0",
-    "eslint-config-htmlacademy": "0.5.2"
+    "browser-sync": "^2.26.7",
+    "del": "^5.1.0",
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-csso": "^4.0.1",
+    "gulp-imagemin": "^7.1.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-posthtml": "^3.0.4",
+    "gulp-rename": "^2.0.0",
+    "gulp-rigger": "^0.5.8",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-svgstore": "^7.0.1",
+    "gulp-uglify": "^3.0.2",
+    "gulp-webp": "^4.0.1",
+    "imagemin-jpegtran": "^6.0.0",
+    "node-sass": "^4.14.1",
+    "posthtml-include": "^1.4.3"
   },
-  "license": "MIT",
-  "dependencies": {},
-  "scripts": {
-    "test": "eslint js/"
-  },
-  "engines": {
-    "node": "8.11"
-  }
+  "browserslist": [
+    "last 2 versions",
+    "IE 11",
+    "Firefox ESR"
+  ],
+  "editorconfig-cli": [
+    "*.json",
+    "*.js",
+    "src/*.html",
+    "src/js/**/*.js",
+    "src/img/**/*.svg",
+    "src/sass/**/*.{sass,scss}"
+  ],
+  "dependencies": {}
 }
